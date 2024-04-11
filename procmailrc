@@ -1,1 +1,39 @@
+SHELL=/bin/sh
+PATH=/usr/local/lib/mh:$PATH
+MAILDIR=$HOME/Mail
+LOGFILE=$HOME/Mail/logfile
+SENDMAIL=/usr/sbin/sendmail
+#VERBOSE=1
+VERBOSE=0
+EOL="
+"
+LOG="$EOL$EOL$EOL"
+LOG="New message log:$EOL"
+LOG=`perl GET_MESSAGE_INDEX`
+LOG="$EOL"
 
+
+
+## Recipe_1:
+#for this recipe I am simply looking for a comma which indicates muliple senders in the "From" string
+:0 H
+* ^From:.*,
+junkmailCompound1
+
+## Recipe_2:
+#for this recipe I used an or operation to detect multiple words within the subject line
+* ^Subject: .*(medications|[Dd]iploma|Reinvent|buhy|pills|viraqrav|cheap|Inteveo)
+junkmailCompound2
+
+## Recipe_3
+#similar to recipe 3 but looking for specific words in the body of the paragraph
+:0 B
+*(DOCTYPE|Sub-Penny|stock|CASINO)
+junkmailCompound3
+
+##Recipe_4
+#for this recipe I am looking at sections like the content type and the content transfer encoding, using multiple rules
+:0
+* ^Content-Type: multipart\/alternative:
+* ^Content-Transfer-Encoding: ([7|8]bit|quoted-printable)
+junkmailCompound4
